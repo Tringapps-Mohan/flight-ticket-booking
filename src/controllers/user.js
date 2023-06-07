@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 module.exports = {
     register: async (req, res, next) => {
         try {
-            const salt = bcrypt.genSaltSync(10);
+            const salt = bcrypt.genSaltSync();
             const hash = bcrypt.hashSync(req.body.password, salt);
             const user = new User({
                 ...req.body,
@@ -46,7 +46,6 @@ module.exports = {
     myBookings : async (req,res,next)=>{
         try{
             const user = await User.findById(req.user.id);
-            
             res.status(200).json(user.bookedFlights);
         }catch(error){
             next(error);

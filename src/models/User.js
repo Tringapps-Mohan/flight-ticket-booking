@@ -1,4 +1,3 @@
-const Flight = require("./Flight.js");
 const mongoose = require("mongoose");
 
 const AddressSchema = new mongoose.Schema({
@@ -29,19 +28,29 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        minlength: 4,
+        maxlength: 20,
     },
     email: {
         type: String,
         required: true,
         unique: true,
+        match: "/^[^\s@]+@[^\s@]+\.[^\s@]+$/",
     },
     password: {
         type: String,
         required: true,
+        minlength: 6,
     },
     phone: {
         type: String,
         required: true,
+        validate: {
+            validator: (value) => {
+                return value.length === 10;
+            },
+            message: "Phone number must be exactly 10 characters long."
+        }
     },
     dob: {
         type: Date,
@@ -54,8 +63,20 @@ const UserSchema = new mongoose.Schema({
         type: AddressSchema,
         required: false,
     },
-    bookedFlights:{
-        type:[{type:mongoose.Schema.Types.ObjectId,ref:'Flight'}]
+    bookedFlights: {
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flight' }],
+        default:[]
+    },
+    role: {
+        type: String,
+        default: "user"
+    },
+    tickets:{
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref:"Ticket"
+        }],
+        default:[]
     }
 }, {
     timestamps: true

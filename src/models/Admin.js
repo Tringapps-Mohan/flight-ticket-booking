@@ -28,19 +28,29 @@ const AdminSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        minlength:4,
+        maxlength:20,
     },
     email: {
         type: String,
         required: true,
         unique: true,
+        match:"/^[^\s@]+@[^\s@]+\.[^\s@]+$/",
     },
     password: {
         type: String,
         required: true,
+        minlength:6,
     },
     phone: {
         type: String,
         required: true,
+        validate:{
+            validator:(value)=>{
+                return value.length === 10;
+            },
+            message:"Phone number must be exactly 10 characters long."
+        }
     },
     dob: {
         type: Date,
@@ -53,10 +63,9 @@ const AdminSchema = new mongoose.Schema({
         type: AddressSchema,
         required: false,
     },
-    isAdmin:{
-        type:Boolean,
-        default:true,
-        required:true,
+    role:{
+        type:String,
+        default:"admin"
     },
 }, {
     timestamps: true

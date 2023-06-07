@@ -26,29 +26,40 @@ module.exports = {
             });
             if (!admin)
                 return next(createError(404, "admin not found!"));
-            const isPasswordCorrect = await bcrypt.compare(req.body.password,admin.password);
+            const isPasswordCorrect = await bcrypt.compare(req.body.password, admin.password);
 
-            if(!isPasswordCorrect)
-                return next(createError(400,"Wrong password or adminname."));
+            if (!isPasswordCorrect)
+                return next(createError(400, "Wrong password or adminname."));
 
-            const token = jwt.sign({id:admin.id,isAdmin:true},process.env.JWT);
-            const {password,...others} = admin._doc;
-            res.cookie("access_token",token,{
-                httpOnly:true,
-            }) .status(200).json({...others});
+            const token = jwt.sign({ id: admin.id, isAdmin: true }, process.env.JWT);
+            const { password, ...others } = admin._doc;
+            res.cookie("access_token", token, {
+                httpOnly: true,
+            }).status(200).json({ ...others });
         } catch (err) {
             next(err);
         }
     },
-    logout : async (req,res,next)=>{
+    logout: async (req, res, next) => {
         res.clearCookie("token");
-        res.json({message:"Logged out successfully"});
+        res.json({ message: "Logged out successfully" });
     },
-    getAllBookedFlights:async (req,res,next)=>{
-        try{
-            const bookedFlights = await Flight.find({ availableSeats : {$lt : capacity}});
-            res.status(200).json({bookedFlights});
-        }catch(err){
+    getAllBookings: async (req, res, next) => {
+        try {
+            const { flightNumber, time } = req.body;
+            const flights = await Flight.find();
+            flights = flights.filter((flight) => flight.flightNumber === flightNumber && flight.departureTime == time);
+            const bookings = [];
+            flights.forEach(flight => {
+                const users = [];
+                flight.seats.forEach(user => users.push(user));
+                bookings.push({
+                    flightNumber: flight.flightNumber,
+                    bookedUsers: users
+                });
+            })
+            res.status(200).json(bookings);
+        } catch (err) {
             next(err);
         }
 

@@ -1,17 +1,18 @@
 const router = require("express").Router();
-const {verifyAdmin,verifyUser} = require("../utils/verifyToken.js");
+const { verifyAdmin, verifyUser } = require("../utils/verifyToken.js");
 const { addFlight,
     removeFlight,
     getAllFlights,
     getFlight,
-    updateFlight }
+    updateFlight,
+    bookFlight }
     = require("../controllers/flight.js");
 
-router.post("/", verifyAdmin ,addFlight);
+router.post("/", verifyAdmin, addFlight);
 router.delete("/:flightId", verifyAdmin, removeFlight);
-router.get("/:flightId",verifyUser, getFlight);
-router.get("/",verifyUser,  getAllFlights);
-router.put("/:flightId",verifyAdmin, updateFlight);
-
+router.get("/:flightId", verifyUser, getFlight);
+router.get("/", verifyUser, getAllFlights);
+router.put("/:flightId", verifyAdmin, updateFlight);
+router.post("/book/", verifyUser, bookFlight);
 
 module.exports = router;

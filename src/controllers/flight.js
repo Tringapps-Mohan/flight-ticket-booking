@@ -1,5 +1,6 @@
 const Flight = require("../models/Flight.js");
 const User = require("../models/User.js");
+const Ticket = require("../models/Ticket.js");
 
 module.exports = {
     addFlight: async (req, res, next) => {
@@ -36,15 +37,15 @@ module.exports = {
             let flights = await Flight.find();
             let startDate = new Date();
             if (departureDate) {
-                flights = flights.filter(flight=>flight.departureDate >= new Date(departureDate));
+                flights = flights.filter(flight => flight.departureDate >= new Date(departureDate));
             }
             if (departureTime) {
-                startDate.setMinutes(parseInt(departureTime.split(":")[1], 10));
                 startDate.setHours(parseInt(departureTime.split(":")[0], 10));
-                flights = flights.filter(flight=>flight.departureDate >= new Date(departureDate));
+                startDate.setMinutes(parseInt(departureTime.split(":")[1], 10));
+                flights = flights.filter(flight => flight.departureDate >= new Date(startDate));
             }
             if (availability) {
-                flights = flights.filter(flight=>flight.availableSeats >= availability);
+                flights = flights.filter(flight => flight.availableSeats >= availability);
             }
             res.status(200).json(flights);
         } catch (err) {
@@ -53,7 +54,6 @@ module.exports = {
     },
     getFlight: async (req, res, next) => {
         try {
-
             const flight = await Flight.findById(req.params.flightId);
             res.status(200).json(flight);
 
@@ -71,6 +71,10 @@ module.exports = {
             if (flight.availableSeats <= 0)
                 return res.status(400).json({ success: false, message: "No available seats on this flight!" });
 
+            let seatNumber = flight.capacity - flight.availableSeats;
+
+            flight.seats[seatNumber] = {isBooked:true,userID:req.user.id};
+
             flight.availableSeats--;
 
             await flight.save();
@@ -80,6 +84,16 @@ module.exports = {
                 return res.status(404).json({ success: false, message: "User not found" });
 
             user.bookedFlights.push(flight);
+            const ticket = new Ticket({
+                userId:req.user.id,
+                flightId:flight._id,
+                seat:seatNumber,
+                passengerName:user.username,
+                boardingDate:new Date(flight.departureDate),
+                boardingTime:new Date(flight.departureTime)
+            });
+            user.tickets.push(ticket);
+            await ticket.save();
             await user.save();
 
             res.status(200).json({ success: true, message: "Flight booked" });
