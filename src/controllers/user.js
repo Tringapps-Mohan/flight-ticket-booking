@@ -45,8 +45,9 @@ module.exports = {
     },
     myBookings : async (req,res,next)=>{
         try{
-            const flights = await User.findById(req.user.id);
-            res.status(200).json(flights);
+            const user = await User.findById(req.user.id);
+            
+            res.status(200).json(user.bookedFlights);
         }catch(error){
             next(error);
         }
