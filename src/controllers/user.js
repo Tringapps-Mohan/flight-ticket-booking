@@ -40,11 +40,12 @@ module.exports = {
             next(err);
         }
     },
-    logout : async (req,res,next)=>{
+    logout : (req,res,next)=>{
         res.clearCookie("token");
         res.json({message:"Logged out successfully"});
     },
     myBookings : async (req,res,next)=>{
-        
+        try{
+            const 
     }
 }
