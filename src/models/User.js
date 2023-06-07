@@ -1,3 +1,4 @@
+const Flight = require("./Flight.js");
 const mongoose = require("mongoose");
 
 const AddressSchema = new mongoose.Schema({
@@ -52,6 +53,10 @@ const UserSchema = new mongoose.Schema({
     address: {
         type: AddressSchema,
         required: false,
+    },
+    bookedFlights:{
+        type:[Flight],
+        default:[]
     }
 }, {
     timestamps: true

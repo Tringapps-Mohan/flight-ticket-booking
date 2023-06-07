@@ -34,7 +34,11 @@ const FlightSchema = new mongoose.Schema({
         default:60,
         required:true
     },
-
+    isBooked:{
+        type:Boolean,
+        default:false,
+        required:true
+    }
 });
 
 module.exports = mongoose.model("Flight",FlightSchema);

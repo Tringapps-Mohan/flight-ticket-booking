@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const createError = require("../utils/error.js");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const Flight = require("../models/Flight.js");
 
 module.exports = {
     register: async (req, res, next) => {
@@ -39,5 +40,18 @@ module.exports = {
         } catch (err) {
             next(err);
         }
+    },
+    logout : async (req,res,next)=>{
+        res.clearCookie("token");
+        res.json({message:"Logged out successfully"});
+    },
+    getAllBookedFlights:async (req,res,next)=>{
+        try{
+            const bookedFlights = await Flight.find({isBooked:true});
+            res.status(200).json({bookedFlights});
+        }catch(err){
+            next(err);
+        }
+
     }
 }

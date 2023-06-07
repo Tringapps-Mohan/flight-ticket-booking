@@ -39,5 +39,12 @@ module.exports = {
         } catch (err) {
             next(err);
         }
+    },
+    logout : async (req,res,next)=>{
+        res.clearCookie("token");
+        res.json({message:"Logged out successfully"});
+    },
+    myBookings : async (req,res,next)=>{
+        
     }
 }
