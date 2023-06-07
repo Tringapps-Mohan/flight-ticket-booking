@@ -48,7 +48,10 @@ module.exports = {
         try {
             const { flightNumber, time } = req.body;
             const flights = await Flight.find();
-            flights = flights.filter((flight) => flight.flightNumber === flightNumber && flight.departureTime == time);
+            if(flightNumber)
+            flights = flights.filter((flight) => flight.flightNumber === flightNumber);
+            if(time)
+            flights = flights.filter((flight) => flight.departureTime == time);
             const bookings = [];
             flights.forEach(flight => {
                 const users = [];
