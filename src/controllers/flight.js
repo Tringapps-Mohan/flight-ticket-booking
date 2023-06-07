@@ -89,7 +89,7 @@ module.exports = {
 
             await flight.save();
             
-            const user = await User.findById(req.user.Id);
+            const user = await User.findById(req.user.id);
             if(!user)
                 return res.status(404).json({success:false,message:"User not found"});
 
