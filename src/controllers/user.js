@@ -2,7 +2,6 @@ const User = require("../models/User.js");
 const bcrypt = require("bcryptjs");
 const createError = require("../utils/error.js");
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
 
 module.exports = {
     register: async (req, res, next) => {
@@ -40,12 +39,16 @@ module.exports = {
             next(err);
         }
     },
-    logout : (req,res,next)=>{
+    logout : async (req,res,next)=>{
         res.clearCookie("token");
         res.json({message:"Logged out successfully"});
     },
     myBookings : async (req,res,next)=>{
         try{
-            const 
+            const flights = await User.findById(req.user.id);
+            res.status(200).json(flights);
+        }catch(error){
+            next(error);
+        }
     }
 }

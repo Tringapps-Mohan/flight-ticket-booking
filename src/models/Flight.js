@@ -34,9 +34,9 @@ const FlightSchema = new mongoose.Schema({
         default:60,
         required:true
     },
-    isBooked:{
-        type:Boolean,
-        default:false,
+    capacity:{
+        type:Number,
+        default:60,
         required:true
     }
 });

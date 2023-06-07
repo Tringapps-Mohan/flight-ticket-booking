@@ -55,8 +55,7 @@ const UserSchema = new mongoose.Schema({
         required: false,
     },
     bookedFlights:{
-        type:[Flight],
-        default:[]
+        type:[{type:mongoose.Schema.Types.ObjectId,ref:'Flight'}]
     }
 }, {
     timestamps: true

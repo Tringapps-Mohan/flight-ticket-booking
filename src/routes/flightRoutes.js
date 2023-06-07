@@ -4,15 +4,14 @@ const { addFlight,
     removeFlight,
     getAllFlights,
     getFlight,
-    checkAvailability,
     updateFlight }
     = require("../controllers/flight.js");
 
-router.post("/add", verifyAdmin ,addFlight);
-router.delete("/remove/:flightId", verifyAdmin, removeFlight);
-router.get("/",verifyUser,  getAllFlights);
-router.put("/",verifyAdmin, updateFlight);
+router.post("/", verifyAdmin ,addFlight);
+router.delete("/:flightId", verifyAdmin, removeFlight);
 router.get("/:flightId",verifyUser, getFlight);
-router.get("/availability/:flightId",verifyUser, checkAvailability);
+router.get("/",verifyUser,  getAllFlights);
+router.put("/:flightId",verifyAdmin, updateFlight);
+
 
 module.exports = router;

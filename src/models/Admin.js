@@ -52,7 +52,12 @@ const AdminSchema = new mongoose.Schema({
     address: {
         type: AddressSchema,
         required: false,
-    }
+    },
+    isAdmin:{
+        type:Boolean,
+        default:true,
+        required:true,
+    },
 }, {
     timestamps: true
 });

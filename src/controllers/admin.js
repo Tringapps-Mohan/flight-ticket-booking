@@ -2,7 +2,6 @@ const Admin = require("../models/Admin.js");
 const bcrypt = require("bcryptjs");
 const createError = require("../utils/error.js");
 const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
 const Flight = require("../models/Flight.js");
 
 module.exports = {
@@ -32,8 +31,8 @@ module.exports = {
             if(!isPasswordCorrect)
                 return next(createError(400,"Wrong password or adminname."));
 
-            const token = jwt.sign({id:admin.id},process.env.JWT);
-            const {password,isAdmin,...others} = admin._doc;
+            const token = jwt.sign({id:admin.id,isAdmin:true},process.env.JWT);
+            const {password,...others} = admin._doc;
             res.cookie("access_token",token,{
                 httpOnly:true,
             }) .status(200).json({...others});
@@ -47,7 +46,7 @@ module.exports = {
     },
     getAllBookedFlights:async (req,res,next)=>{
         try{
-            const bookedFlights = await Flight.find({isBooked:true});
+            const bookedFlights = await Flight.find({ availableSeats : {$lt : capacity}});
             res.status(200).json({bookedFlights});
         }catch(err){
             next(err);
