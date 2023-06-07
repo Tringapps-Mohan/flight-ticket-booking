@@ -93,8 +93,6 @@ module.exports = {
             if(!user)
                 return res.status(404).json({success:false,message:"User not found"});
 
-            if(user.availableSeats <= 0)
-                return res.status(400).json({success:false,message:"No available seats on this flight!"});
             
             user.bookedFlights.push(flight);
             await user.save();
