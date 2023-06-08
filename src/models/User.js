@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Define the Address schema
 const AddressSchema = new mongoose.Schema({
     country: {
         type: String,
@@ -23,6 +24,7 @@ const AddressSchema = new mongoose.Schema({
     },
 });
 
+// Define the User schema
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -65,20 +67,21 @@ const UserSchema = new mongoose.Schema({
     },
     bookedFlights: {
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flight' }],
-        default:[]
+        default: []
     },
     role: {
         type: String,
         default: "user"
     },
-    tickets:{
+    tickets: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref:"Ticket"
+            ref: "Ticket"
         }],
-        default:[]
+        default: []
     }
 }, {
     timestamps: true
 });
-module.exports = mongoose.model("User", UserSchema);
+
+module.exports = mongoose.model("User", UserSchema); // Export the User model
