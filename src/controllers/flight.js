@@ -33,20 +33,22 @@ module.exports = {
 
     getAllFlights: async (req, res, next) => {
         try {
-            const { departureDate, departureTime, availability } = req.query;
-            let flights = await Flight.find();
-            let startDate = new Date();
+            const { flightNumber, departureTime,departureDate,availability } = req.query;
+            
+            const conditions = {};
+            if (flightNumber)
+                conditions.flightNumber = {$eq : flightNumber};
+                
             if (departureDate) {
-                flights = flights.filter(flight => flight.departureDate >= new Date(departureDate));
+                conditions.departureDate = {$eq:new Date(departureDate)};
             }
             if (departureTime) {
-                startDate.setHours(parseInt(departureTime.split(":")[0], 10));
-                startDate.setMinutes(parseInt(departureTime.split(":")[1], 10));
-                flights = flights.filter(flight => flight.departureDate >= new Date(startDate));
+                conditions.departureTime = {$eq:departureTime};
             }
             if (availability) {
-                flights = flights.filter(flight => flight.availableSeats >= availability);
+                conditions.availableSeats = {$gte:availability};
             }
+            const flights = await Flight.find(conditions);
             res.status(200).json(flights);
         } catch (err) {
             next(err);
@@ -73,7 +75,7 @@ module.exports = {
 
             let seatNumber = flight.capacity - flight.availableSeats;
 
-            flight.seats[seatNumber] = {isBooked:true,userID:req.user.id};
+            flight.seats[seatNumber+1] = {isBooked:true,userID:req.user.id};
 
             flight.availableSeats--;
 
@@ -90,7 +92,7 @@ module.exports = {
                 seat:seatNumber,
                 passengerName:user.username,
                 boardingDate:new Date(flight.departureDate),
-                boardingTime:new Date(flight.departureTime)
+                boardingTime:flight.departureTime
             });
             user.tickets.push(ticket);
             await ticket.save();

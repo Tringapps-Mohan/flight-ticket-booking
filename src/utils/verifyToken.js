@@ -18,7 +18,7 @@ module.exports = {
     verifyToken,
     verifyUser: (req, res, next) => {
         verifyToken(req, res, () => {
-            if (req.user.id) {
+            if (req.user.id && req.user.role === "user") {
                 next();
             } else {
                 return next(createError(403, "You are not authorized!"));
@@ -27,8 +27,7 @@ module.exports = {
     },
     verifyAdmin: (req, res, next) => {
         verifyToken(req, res, () => {
-            
-            if (req.user.isAdmin) {
+            if (req.user.id && req.user.role === "admin") {
                 next();
             } else {
                 return next(createError(403, "You are not authorized!"));

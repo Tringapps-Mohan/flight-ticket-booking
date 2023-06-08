@@ -25,29 +25,29 @@ module.exports = {
             });
             if (!user)
                 return next(createError(404, "User not found!"));
-            const isPasswordCorrect = await bcrypt.compare(req.body.password,user.password);
+            const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
 
-            if(!isPasswordCorrect)
-                return next(createError(400,"Wrong password or username."));
+            if (!isPasswordCorrect)
+                return next(createError(400, "Wrong password or username."));
 
-            const token = jwt.sign({id:user.id},process.env.JWT);
-            const {password,...others} = user._doc;
-            res.cookie("access_token",token,{
-                httpOnly:true,
-            }) .status(200).json({...others});
+            const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT);
+            const { password, ...others } = user._doc;
+            res.cookie("access_token", token, {
+                httpOnly: true,
+            }).status(200).json({ ...others });
         } catch (err) {
             next(err);
         }
     },
-    logout : async (req,res,next)=>{
+    logout: (req, res, next) => {
         res.clearCookie("token");
-        res.json({message:"Logged out successfully"});
+        res.json({ message: "Logged out successfully" });
     },
-    myBookings : async (req,res,next)=>{
-        try{
+    myBookings: async (req, res, next) => {
+        try {
             const user = await User.findById(req.user.id);
             res.status(200).json(user.bookedFlights);
-        }catch(error){
+        } catch (error) {
             next(error);
         }
     }

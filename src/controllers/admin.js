@@ -31,7 +31,7 @@ module.exports = {
             if (!isPasswordCorrect)
                 return next(createError(400, "Wrong password or adminname."));
 
-            const token = jwt.sign({ id: admin.id, isAdmin: true }, process.env.JWT);
+            const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT);
             const { password, ...others } = admin._doc;
             res.cookie("access_token", token, {
                 httpOnly: true,
@@ -40,24 +40,38 @@ module.exports = {
             next(err);
         }
     },
-    logout: async (req, res, next) => {
+    logout: (req, res, next) => {
         res.clearCookie("token");
         res.json({ message: "Logged out successfully" });
     },
     getAllBookings: async (req, res, next) => {
         try {
-            const { flightNumber, time } = req.body;
-            const flights = await Flight.find();
-            if(flightNumber)
-            flights = flights.filter((flight) => flight.flightNumber === flightNumber);
-            if(time)
-            flights = flights.filter((flight) => flight.departureTime == time);
+            const { flightNumber, departureTime,departureDate } = req.query;
+            console.log(flightNumber,departureTime,departureDate);
+            
+            const conditions = {};
+            if (flightNumber)
+                conditions.flightNumber = {$eq : flightNumber};
+                
+            if (departureDate) {
+                conditions.departureDate = {$eq:new Date(departureDate)};
+            }
+            if (departureTime) {
+                conditions.departureTime = {$eq:departureTime};
+            }
+            console.log(conditions);
+            const flights = await Flight.find(conditions);
             const bookings = [];
             flights.forEach(flight => {
                 const users = [];
-                flight.seats.forEach(user => users.push(user));
+                flight.seats.forEach((seat, seatNumber) => {
+                    if (seat.isBooked) {
+                        users.push({ seatNumber, userID: seat.userID });
+                    }
+                });
                 bookings.push({
                     flightNumber: flight.flightNumber,
+                    airline: flight.airline,
                     bookedUsers: users
                 });
             })
