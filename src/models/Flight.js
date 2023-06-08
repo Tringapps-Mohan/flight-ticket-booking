@@ -58,7 +58,7 @@ const FlightSchema = new mongoose.Schema({
 });
 
 // Pre-save middleware function to initialize seats array
-FlightSchema.pre("save", (next)=> {
+FlightSchema.pre("save", function(next)=> {
     if (this.isNew) {
         for (let seat = 0; seat < this.capacity; seat++) {
             this.seats[seat] = { isBooked: false, userID: "" };
