@@ -142,6 +142,7 @@ The Flight model represents a flight in the Flight Booking System. It contains t
 -   availableSeats: Number of available seats on the flight (Number).
 
 -   seats: Array of seat objects representing the seats on the flight. Each seat object contains the seat number, booking status, and user ID (if booked).
+-   fare: It indicates the fare(Number).
 
 ### Ticket Model
 
