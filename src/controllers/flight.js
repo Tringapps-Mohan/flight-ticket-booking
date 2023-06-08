@@ -107,7 +107,7 @@ module.exports = {
       let seatNumber = flight.capacity - flight.availableSeats;
 
       // Update the seat as booked for the user
-      flight.seats[seatNumber + 1] = { isBooked: true, userID: req.user.id };
+      flight.seats[seatNumber] = { isBooked: true, userID: req.user.id };
 
       // Decrease the available seats count
       flight.availableSeats--;
