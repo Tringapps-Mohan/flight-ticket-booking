@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+
+// Define the Flight schema
 const FlightSchema = new mongoose.Schema({
     flightNumber: {
         type: Number,
@@ -50,10 +52,11 @@ const FlightSchema = new mongoose.Schema({
     },
 });
 
-FlightSchema.pre("save", (next) => {
+// Pre-save middleware function to initialize seats array
+FlightSchema.pre("save", (next)=> {
     if (this.isNew) {
         for (let seat = 0; seat < this.capacity; seat++) {
-            this.seats[seat] = {isBooked:false,userID:""};
+            this.seats[seat] = { isBooked: false, userID: "" };
         }
     }
     next();
