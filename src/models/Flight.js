@@ -50,6 +50,11 @@ const FlightSchema = new mongoose.Schema({
         type: [Object],
         default: []
     },
+    
+    fare:{
+        type:Number,
+        required:true
+    }
 });
 
 // Pre-save middleware function to initialize seats array
