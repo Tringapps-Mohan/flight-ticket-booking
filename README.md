@@ -43,7 +43,7 @@ To use the API, clients need to send HTTP requests to the specified endpoints wi
     Log out the currently authenticated user.
 
 ### User
--       GET /users/bookings 
+-       GET /users/mybookings 
 
     Get the bookings of the authenticated user.
 
